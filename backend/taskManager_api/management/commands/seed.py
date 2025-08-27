@@ -36,4 +36,4 @@ class Command(BaseCommand):
         for task in tasks:
             Task.objects.get_or_create(title=task["title"], defaults={"description": task["description"]})
 
-        self.stdout.write(self.style.SUCCESS("Successfully seeded 25"))
+        self.stdout.write(self.style.SUCCESS("Successfully seeded"))
