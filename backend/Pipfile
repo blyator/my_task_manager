@@ -8,6 +8,8 @@ djangorestframework = "*"
 django = "*"
 django-cors-headers = "*"
 django-filter = "*"
+pytest = "*"
+pytest-django = "*"
 
 [dev-packages]
 
