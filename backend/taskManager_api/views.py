@@ -1,3 +1,15 @@
-from django.shortcuts import render
+from rest_framework import generics
+from rest_framework.views import APIView
+from .models import Task
+from .serializers import TaskSerializer
 
-# Create your views here.
+
+
+class TaskFetchGeneric(generics.ListCreateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+
+class TaskDetailGeneric(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
