@@ -22,14 +22,12 @@ def test_create_task():
     task = Task.objects.first()
     assert task.title == "Pytest Task"
 
+
 @pytest.mark.django_db
 def test_delete_task():
     task = Task.objects.create(title="Task to Delete", description="This task will be deleted")
-    
     client = APIClient()
     url = reverse("task-detail", args=[task.id])
-    
     response = client.delete(url)
-    
     assert response.status_code == 204
     assert Task.objects.count() == 0
