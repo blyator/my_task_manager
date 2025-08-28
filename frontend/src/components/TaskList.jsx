@@ -51,7 +51,6 @@ const TaskList = ({
       <div className="space-y-3 mb-6">
         {tasks.length === 0 ? (
           <div className="text-center py-8 sm:py-10">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gray-100 rounded-full flex items-center justify-center"></div>
             <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2">
               No tasks found
             </h3>
