@@ -1,8 +1,22 @@
 import React, { useState } from "react";
 
-const TaskList = ({ data }) => {
-  const [filter, setFilter] = useState("all");
-  const tasks = data?.results || [];
+const TaskList = ({
+  data = {
+    count: 0,
+    next: null,
+    previous: null,
+    results: [],
+  },
+  totalCount = 0,
+  completedCount = 0,
+  onToggle = () => {},
+  onDelete = () => {},
+  onEdit = () => {},
+  loading = false,
+  filter = "all",
+  setFilter = () => {},
+}) => {
+  const tasks = data.results || [];
 
   const filteredTasks =
     filter === "completed" ? tasks.filter((task) => task.is_completed) : tasks;
