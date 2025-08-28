@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+import dj_database_url
 
 
 # Application definition
@@ -89,7 +90,9 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+DATABASES["default"] = dj_database_url.parse(
+    "postgresql://task_ttr2_user:ukpzRg7K6Y9ZtK3DBCGVqvY0dR9MF9qb@dpg-d2oa5indiees73a75i8g-a.oregon-postgres.render.com/task_ttr2"
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
