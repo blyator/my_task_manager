@@ -61,6 +61,9 @@ const App = () => {
       body: JSON.stringify(taskData),
     });
     const result = await response.json();
+
+    // Refresh the task list after adding
+    const updatedResponse = await axios.get(pageUrl);
     setTaskData(updatedResponse.data);
     setTotalCount((prev) => prev + 1);
 
@@ -75,6 +78,7 @@ const App = () => {
     });
     const result = await response.json();
 
+    const updatedResponse = await axios.get(pageUrl);
     setTaskData(updatedResponse.data);
 
     return result;
@@ -103,7 +107,7 @@ const App = () => {
         console.error("Failed to delete task");
       }
     } catch (error) {
-      console.error("Error deleting task:", error);
+      console.error("Error:", error);
     }
   };
 
