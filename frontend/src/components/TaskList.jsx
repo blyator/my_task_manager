@@ -1,7 +1,7 @@
 // components/TaskList.jsx
 import React from "react";
 
-const TaskList = ({ data, onDelete, onEdit }) => {
+const TaskList = ({ data, onDelete, onEdit, onToggle }) => {
   const tasks = data?.results || [];
 
   if (tasks.length === 0) {
@@ -15,18 +15,28 @@ const TaskList = ({ data, onDelete, onEdit }) => {
           key={task.id}
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-100 rounded"
         >
-          <div>
-            <span
-              className={`font-medium ${
-                task.is_completed ? "line-through text-gray-500" : ""
-              }`}
-            >
-              {task.title}
-            </span>
-            {task.description && (
-              <p className="text-sm text-gray-600">{task.description}</p>
-            )}
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              checked={task.is_completed}
+              onChange={() => onToggle(task.id)}
+              className="h-4 w-4"
+            />
+
+            <div>
+              <span
+                className={`font-medium ${
+                  task.is_completed ? "line-through text-gray-500" : ""
+                }`}
+              >
+                {task.title}
+              </span>
+              {task.description && (
+                <p className="text-sm text-gray-600">{task.description}</p>
+              )}
+            </div>
           </div>
+
           <div className="flex space-x-2 mt-2 sm:mt-0">
             <button
               onClick={() => onEdit(task)}
