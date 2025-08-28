@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 const TaskList = ({ data }) => {
   const [filter, setFilter] = useState("all");
-
   const tasks = data?.results || [];
 
   const filteredTasks =
@@ -49,6 +48,11 @@ const TaskList = ({ data }) => {
               </span>
               {task.description && (
                 <p className="text-sm text-gray-600">{task.description}</p>
+              )}
+              {task.created_at && (
+                <p className="text-xs text-gray-400 mt-1">
+                  Created: {new Date(task.created_at).toLocaleString()}
+                </p>
               )}
             </div>
           </li>
