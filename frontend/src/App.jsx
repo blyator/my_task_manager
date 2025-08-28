@@ -62,7 +62,6 @@ const App = () => {
     });
     const result = await response.json();
 
-    // Refresh the task list after adding
     const updatedResponse = await axios.get(pageUrl);
     setTaskData(updatedResponse.data);
     setTotalCount((prev) => prev + 1);

@@ -51,7 +51,7 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-3 mb-8">
+    <div className="grid grid-cols-1 gap-3 mt-20 mb-8">
       <div className="bg-white p-4 rounded-lg border border-gray-200">
         <h2 className="text-lg font-bold text-gray-800 mb-3">
           {editingTask ? "Edit Task" : "Add New Task"}

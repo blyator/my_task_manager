@@ -33,16 +33,16 @@ const TaskList = ({
         <div className="flex gap-2 p-2 bg-gray-100 rounded-lg">
           <button
             onClick={() => setFilter("all")}
-            className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm bg-blue-200 text-blue-800"
+            className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm bg-blue-300 text-blue-800"
           >
-            All ({totalCount})
+            All Tasks {totalCount}
           </button>
 
           <button
             onClick={() => setFilter("completed")}
-            className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm bg-green-300 text-green-800"
+            className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm bg-sky-300 text-green-800"
           >
-            Completed ({completedCount})
+            Completed {completedCount}
           </button>
         </div>
       </div>
