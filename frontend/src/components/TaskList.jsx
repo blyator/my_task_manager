@@ -1,28 +1,44 @@
-// components/TaskList.jsx
-import React from "react";
+import React, { useState } from "react";
 
-const TaskList = ({ data, onDelete, onEdit, onToggle }) => {
+const TaskList = ({ data }) => {
+  const [filter, setFilter] = useState("all");
+
   const tasks = data?.results || [];
+
+  const filteredTasks =
+    filter === "completed" ? tasks.filter((task) => task.is_completed) : tasks;
 
   if (tasks.length === 0) {
     return <p className="text-gray-500">No tasks yet.</p>;
   }
 
   return (
-    <ul className="space-y-2">
-      {tasks.map((task) => (
-        <li
-          key={task.id}
-          className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-100 rounded"
+    <div>
+      <div className="mb-4 flex space-x-2">
+        <button
+          className={`px-3 py-1 rounded ${
+            filter === "all" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setFilter("all")}
         >
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              checked={task.is_completed}
-              onChange={() => onToggle(task.id)}
-              className="h-4 w-4"
-            />
+          All
+        </button>
+        <button
+          className={`px-3 py-1 rounded ${
+            filter === "completed" ? "bg-green-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={() => setFilter("completed")}
+        >
+          Completed
+        </button>
+      </div>
 
+      <ul className="space-y-2">
+        {filteredTasks.map((task) => (
+          <li
+            key={task.id}
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-100 rounded"
+          >
             <div>
               <span
                 className={`font-medium ${
@@ -35,25 +51,10 @@ const TaskList = ({ data, onDelete, onEdit, onToggle }) => {
                 <p className="text-sm text-gray-600">{task.description}</p>
               )}
             </div>
-          </div>
-
-          <div className="flex space-x-2 mt-2 sm:mt-0">
-            <button
-              onClick={() => onEdit(task)}
-              className="px-3 py-1 bg-yellow-500 text-white rounded"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => onDelete(task.id)}
-              className="px-3 py-1 bg-red-500 text-white rounded"
-            >
-              Delete
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
