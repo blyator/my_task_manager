@@ -8,7 +8,6 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
 
   const onTaskSaved = () => {
     setEditingTask(null);
-    // Task list will be refreshed by the addTask/updateTask functions
   };
 
   const onCancel = () => {
@@ -80,7 +79,7 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
-              Description (optional)
+              Description
             </label>
             <textarea
               name="description"
