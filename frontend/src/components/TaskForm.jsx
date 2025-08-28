@@ -6,18 +6,10 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
     description: "",
   });
 
-  const onTaskSaved = () => {
-    setEditingTask(null);
-  };
-
-  const onCancel = () => {
-    setEditingTask(null);
-  };
-
   useEffect(() => {
     if (editingTask) {
       setFormData({
-        title: editingTask.title || "",
+        title: editingTask.title,
         description: editingTask.description || "",
       });
     } else {
@@ -33,7 +25,11 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formData.title.trim()) return;
+
     const taskData = {
       title: formData.title,
       description: formData.description || null,
@@ -46,12 +42,12 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
       setFormData({ title: "", description: "" });
     }
 
-    onTaskSaved();
+    setEditingTask(null);
   };
 
   const handleCancel = () => {
     setFormData({ title: "", description: "" });
-    onCancel();
+    setEditingTask(null);
   };
 
   return (
@@ -61,7 +57,7 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
           {editingTask ? "Edit Task" : "Add New Task"}
         </h2>
 
-        <div className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Title <span className="text-red-500">*</span>
@@ -93,7 +89,7 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
 
           <div className="flex gap-2">
             <button
-              onClick={handleSubmit}
+              type="submit"
               className="px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors"
             >
               {editingTask ? "Update" : "Add Task"}
@@ -101,6 +97,7 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
 
             {editingTask && (
               <button
+                type="button"
                 onClick={handleCancel}
                 className="px-3 py-1.5 bg-gray-500 text-white text-sm font-medium rounded-md hover:bg-gray-600 transition-colors"
               >
@@ -108,7 +105,7 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
               </button>
             )}
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
