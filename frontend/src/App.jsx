@@ -1,65 +1,83 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import TaskList from "./components/TaskList";
-import TaskForm from "./components/TaskForm";
 import Pagination from "./components/Pagination";
+import TaskForm from "./components/TaskForm";
 
 export const BASE_URL = "http://127.0.0.1:8000/api";
 
 const App = () => {
   const [taskData, setTaskData] = useState({
-    results: [],
+    count: 0,
     next: null,
     previous: null,
+    results: [],
   });
+  const [loading, setLoading] = useState(true);
+  const [completedCount, setCompletedCount] = useState(0);
+  const [TotalCount, setTotalCount] = useState(0);
+  const [pageUrl, setPageUrl] = useState(`${BASE_URL}/tasks`);
+  const [filter, setFilter] = useState("all");
   const [editingTask, setEditingTask] = useState(null);
 
   useEffect(() => {
-    fetchTasks(`${BASE_URL}/tasks/`);
-  }, []);
+    if (filter === "completed") {
+      setPageUrl(`${BASE_URL}/tasks/?is_completed=true`);
+    } else {
+      setPageUrl(`${BASE_URL}/tasks/`);
+    }
+  }, [filter]);
 
-  const fetchTasks = (url) => {
+  useEffect(() => {
+    setLoading(true);
     axios
-      .get(url)
-      .then((response) => setTaskData(response.data))
+      .get(pageUrl)
+      .then((response) => {
+        setTaskData(response.data);
+        if (filter === "all") {
+          setTotalCount(response.data.count);
+        }
+      })
       .catch((error) => console.error("error fetching tasks", error));
-  };
+
+    Promise.all([
+      axios.get(`${BASE_URL}/tasks/`),
+      axios.get(`${BASE_URL}/tasks/?is_completed=true`),
+    ])
+      .then(([allTasksResponse, completedTasksResponse]) => {
+        setTotalCount(allTasksResponse.data.count);
+        setCompletedCount(completedTasksResponse.data.count);
+      })
+      .catch((error) => console.error("error fetching counts", error))
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [pageUrl, filter]);
 
   const addTask = async (taskData) => {
-    try {
-      const response = await fetch(`${BASE_URL}/tasks/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(taskData),
-      });
+    const response = await fetch(`${BASE_URL}/tasks/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(taskData),
+    });
+    const result = await response.json();
+    setTaskData(updatedResponse.data);
+    setTotalCount((prev) => prev + 1);
 
-      if (response.ok) {
-        fetchTasks(`${BASE_URL}/tasks/`);
-      } else {
-        console.error("Failed to add task");
-      }
-    } catch (error) {
-      console.error("Error adding task:", error);
-    }
+    return result;
   };
 
   const updateTask = async (id, taskData) => {
-    try {
-      const response = await fetch(`${BASE_URL}/tasks/${id}/`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(taskData),
-      });
+    const response = await fetch(`${BASE_URL}/tasks/${id}/`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(taskData),
+    });
+    const result = await response.json();
 
-      if (response.ok) {
-        fetchTasks(`${BASE_URL}/tasks/`);
-        setEditingTask(null);
-      } else {
-        console.error("Failed to update task");
-      }
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
+    setTaskData(updatedResponse.data);
+
+    return result;
   };
 
   const handleDelete = async (id) => {
@@ -72,7 +90,15 @@ const App = () => {
         setTaskData((prev) => ({
           ...prev,
           results: prev.results.filter((task) => task.id !== id),
+          count: prev.count - 1,
         }));
+
+        setTotalCount((prev) => prev - 1);
+
+        const deletedTask = taskData.results.find((task) => task.id === id);
+        if (deletedTask && deletedTask.is_completed) {
+          setCompletedCount((prev) => prev - 1);
+        }
       } else {
         console.error("Failed to delete task");
       }
@@ -80,54 +106,52 @@ const App = () => {
       console.error("Error deleting task:", error);
     }
   };
-  const onToggle = async (taskId) => {
-    const task = taskData.results.find((t) => t.id === taskId);
-    if (!task) return;
 
-    const updatedTask = { ...task, is_completed: !task.is_completed };
+  const onToggle = (taskId) => {
+    const task = taskData.results.find((task) => task.id === taskId);
+    if (task) {
+      const newCompletedStatus = !task.is_completed;
 
-    try {
-      const res = await fetch(`${BASE_URL}/tasks/${taskId}/`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ is_completed: updatedTask.is_completed }),
+      updateTask(taskId, {
+        is_completed: newCompletedStatus,
       });
 
-      if (res.ok) {
-        setTaskData((prev) => ({
-          ...prev,
-          results: prev.results.map((t) => (t.id === taskId ? updatedTask : t)),
-        }));
+      if (newCompletedStatus) {
+        setCompletedCount((prev) => prev + 1);
+      } else {
+        setCompletedCount((prev) => prev - 1);
       }
-    } catch (error) {
-      console.error("Error toggling task:", error);
-    }
-  };
-
-  const handlePageChange = (url) => {
-    if (url) {
-      fetchTasks(url);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="p-4 sm:p-6 max-w-4xl mx-auto space-y-6">
+      <div className="p-4 sm:p-6 max-w-4xl mx-auto">
         <TaskForm
           addTask={addTask}
           updateTask={updateTask}
           editingTask={editingTask}
+          setEditingTask={setEditingTask}
         />
+
         <TaskList
           data={taskData}
+          completedCount={completedCount}
+          loading={loading}
+          totalCount={TotalCount}
+          filter={filter}
+          setFilter={setFilter}
           onDelete={handleDelete}
           onEdit={setEditingTask}
+          onToggle={onToggle}
         />
-        <Pagination
-          previous={taskData.previous}
-          next={taskData.next}
-          onPageChange={handlePageChange}
-        />
+        {(taskData.previous || taskData.next) && (
+          <Pagination
+            previous={taskData.previous}
+            next={taskData.next}
+            onPageChange={(url) => url && setPageUrl(url)}
+          />
+        )}
       </div>
     </div>
   );
