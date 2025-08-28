@@ -1,4 +1,5 @@
 import React from "react";
+import Loader from "./Loader";
 
 const TaskList = ({
   data = {
@@ -22,7 +23,7 @@ const TaskList = ({
   if (loading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600"></div>
+        <Loader />
       </div>
     );
   }
@@ -50,9 +51,7 @@ const TaskList = ({
       <div className="space-y-3 mb-6">
         {tasks.length === 0 ? (
           <div className="text-center py-8 sm:py-10">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-              <Clipboard className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
-            </div>
+            <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gray-100 rounded-full flex items-center justify-center"></div>
             <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2">
               No tasks found
             </h3>
