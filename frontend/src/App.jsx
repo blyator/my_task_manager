@@ -53,7 +53,7 @@ const App = () => {
 
       if (response.ok) {
         fetchTasks(`${BASE_URL}/tasks/`);
-        setEditingTask(null); // clear edit mode
+        setEditingTask(null);
       } else {
         console.error("Failed to update task");
       }
@@ -78,6 +78,29 @@ const App = () => {
       }
     } catch (error) {
       console.error("Error deleting task:", error);
+    }
+  };
+  const onToggle = async (taskId) => {
+    const task = taskData.results.find((t) => t.id === taskId);
+    if (!task) return;
+
+    const updatedTask = { ...task, is_completed: !task.is_completed };
+
+    try {
+      const res = await fetch(`${BASE_URL}/tasks/${taskId}/`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_completed: updatedTask.is_completed }),
+      });
+
+      if (res.ok) {
+        setTaskData((prev) => ({
+          ...prev,
+          results: prev.results.map((t) => (t.id === taskId ? updatedTask : t)),
+        }));
+      }
+    } catch (error) {
+      console.error("Error toggling task:", error);
     }
   };
 
