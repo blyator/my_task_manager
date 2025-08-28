@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "my-task-manager-2-cgub.onrender.com",
+    "my-task-manager-qcv8.onrender.com",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
