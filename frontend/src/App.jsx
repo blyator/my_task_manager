@@ -4,7 +4,7 @@ import TaskList from "./components/TaskList";
 import Pagination from "./components/Pagination";
 import TaskForm from "./components/TaskForm";
 
-export const BASE_URL = "http://127.0.0.1:8000/api";
+export const BASE_URL = "https://my-task-manager-qcv8.onrender.com/api";
 
 const App = () => {
   const [taskData, setTaskData] = useState({
