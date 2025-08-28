@@ -59,9 +59,6 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              Title <span className="text-red-500">*</span>
-            </label>
             <input
               type="text"
               name="title"
@@ -74,9 +71,6 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
-              Description
-            </label>
             <textarea
               name="description"
               value={formData.description}
@@ -90,7 +84,7 @@ function TaskForm({ addTask, updateTask, editingTask, setEditingTask }) {
           <div className="flex gap-2">
             <button
               type="submit"
-              className="px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors"
+              className="px-3 py-1.5 bg-emerald-600 text-white text-sm font-medium rounded-md"
             >
               {editingTask ? "Update" : "Add Task"}
             </button>
