@@ -1,5 +1,6 @@
 import React from "react";
 import Loader from "./Loader";
+import { Calendar, Trash2, Edit2, CheckCircle, Circle, Layers } from "lucide-react";
 
 const TaskList = ({
   data = {
@@ -18,11 +19,10 @@ const TaskList = ({
   setFilter = () => {},
 }) => {
   const tasks = data.results || [];
-  const taskCount = data.count || 0;
-
+  
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-8">
+      <div className="flex justify-center items-center py-20">
         <Loader />
       </div>
     );
@@ -30,82 +30,113 @@ const TaskList = ({
 
   return (
     <>
-      <div className="mb-6 sm:mb-8">
-        <div className="flex gap-2 p-2 bg-gray-100 rounded-lg">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+          <Layers className="w-5 h-5 text-blue-600" />
+          Tasks <span className="text-slate-400 font-normal text-sm">({totalCount})</span>
+        </h2>
+        
+        <div className="flex bg-slate-100 p-1 rounded-lg">
           <button
             onClick={() => setFilter("all")}
-            className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm bg-blue-300 text-blue-800 cursor-pointer"
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+              filter === "all"
+                ? "bg-white text-blue-600 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
           >
-            All Tasks {totalCount}
+            All
           </button>
-
           <button
             onClick={() => setFilter("completed")}
-            className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm bg-sky-300 text-green-800 cursor-pointer"
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+              filter === "completed"
+                ? "bg-white text-emerald-600 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
           >
-            Completed {completedCount}
+            Completed
           </button>
         </div>
       </div>
 
-      <div className="space-y-3 mb-6">
+      <div className="space-y-4">
         {tasks.length === 0 ? (
-          <div className="text-center py-8 sm:py-10">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2">
+          <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+              <Layers className="w-8 h-8 text-slate-300" />
+            </div>
+            <h3 className="text-lg font-medium text-slate-700 mb-1">
               No tasks found
             </h3>
-            <p className="text-sm text-gray-500 px-4">
-              {filter === "all" ? "Add task to get started" : "No tasks ."}
+            <p className="text-sm text-slate-500">
+              {filter === "all" ? "Get started by creating a new task." : "No completed tasks yet."}
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             {tasks.map((task) => (
               <div
                 key={task.id}
-                className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                className={`group bg-white p-4 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 ${
+                  task.is_completed ? "opacity-75" : "opacity-100"
+                }`}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-start space-x-2 flex-1 min-w-0">
-                    <input
-                      type="checkbox"
-                      checked={task.is_completed}
-                      onChange={() => onToggle(task.id)}
-                      className="h-4 w-4 text-blue-600 rounded mt-0.5 flex-shrink-0"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <h4
-                        className={`font-medium text-sm break-words ${
-                          task.is_completed
-                            ? "line-through text-gray-500"
-                            : "text-gray-800"
-                        }`}
-                      >
-                        {task.title}
-                      </h4>
-                      {task.description && (
-                        <p className="text-xs text-gray-600 mt-1 break-words">
-                          {task.description}
-                        </p>
-                      )}
-                      <p className="text-xs text-gray-400 mt-1">
-                        Created:{" "}
-                        {new Date(task.created_at).toLocaleDateString()}
+                <div className="flex items-start gap-4">
+                  <button
+                    onClick={() => onToggle(task.id)}
+                    className={`mt-1 flex-shrink-0 transition-colors ${
+                      task.is_completed ? "text-emerald-500" : "text-slate-300 hover:text-blue-500"
+                    }`}
+                  >
+                    {task.is_completed ? (
+                      <CheckCircle className="w-6 h-6" />
+                    ) : (
+                      <Circle className="w-6 h-6" />
+                    )}
+                  </button>
+                  
+                  <div className="flex-1 min-w-0 pt-0.5">
+                    <h4
+                      className={`font-semibold text-base leading-tight mb-1 truncate pr-4 ${
+                        task.is_completed
+                          ? "text-slate-500 line-through decoration-slate-400"
+                          : "text-slate-800"
+                      }`}
+                    >
+                      {task.title}
+                    </h4>
+                    
+                    {task.description && (
+                      <p className="text-sm text-slate-600 mb-3 line-clamp-2 leading-relaxed">
+                        {task.description}
                       </p>
+                    )}
+                    
+                    <div className="flex items-center gap-4 mt-2">
+                      <div className="flex items-center text-xs text-slate-400 gap-1.5">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {new Date(task.created_at).toLocaleDateString(undefined, {
+                           month: 'short', day: 'numeric'
+                        })}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col sm:flex-row gap-1 flex-shrink-0">
+
+                  <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => onEdit(task)}
-                      className="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 hover:bg-blue-50 rounded transition-colors cursor-pointer"
+                      className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                      title="Edit"
                     >
-                      Edit
+                      <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => onDelete(task.id)}
-                      className="text-red-600 hover:text-red-800 text-xs px-2 py-1 hover:bg-red-50 rounded transition-colors cursor-pointer"
+                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                      title="Delete"
                     >
-                      Delete
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
