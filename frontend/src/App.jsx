@@ -4,7 +4,7 @@ import TaskList from "./components/TaskList";
 import Pagination from "./components/Pagination";
 import TaskForm from "./components/TaskForm";
 
-export const BASE_URL = "https://my-task-manager-qcv8.onrender.com/api";
+export const BASE_URL = "https://blyator.qzz.io/api";
 
 const App = () => {
   const [taskData, setTaskData] = useState({
@@ -128,33 +128,52 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="p-4 sm:p-6 max-w-4xl mx-auto">
-        <TaskForm
-          addTask={addTask}
-          updateTask={updateTask}
-          editingTask={editingTask}
-          setEditingTask={setEditingTask}
-        />
+    <div className="min-h-screen bg-gray-100 text-slate-800 font-sans">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header className="mb-8">
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            Task Manager
+          </h1>
+          <p className="text-slate-500 mt-1">
+            Manage your daily goals and productivity.
+          </p>
+        </header>
 
-        <TaskList
-          data={taskData}
-          completedCount={completedCount}
-          loading={loading}
-          totalCount={TotalCount}
-          filter={filter}
-          setFilter={setFilter}
-          onDelete={handleDelete}
-          onEdit={setEditingTask}
-          onToggle={onToggle}
-        />
-        {(taskData.previous || taskData.next) && (
-          <Pagination
-            previous={taskData.previous}
-            next={taskData.next}
-            onPageChange={(url) => url && setPageUrl(url)}
-          />
-        )}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* Left Column: Form */}
+          <div className="w-full lg:w-1/3 lg:sticky lg:top-8 transition-all duration-300">
+            <TaskForm
+              addTask={addTask}
+              updateTask={updateTask}
+              editingTask={editingTask}
+              setEditingTask={setEditingTask}
+            />
+          </div>
+
+          {/* Right Column: List */}
+          <div className="w-full lg:flex-1">
+            <TaskList
+              data={taskData}
+              completedCount={completedCount}
+              loading={loading}
+              totalCount={TotalCount}
+              filter={filter}
+              setFilter={setFilter}
+              onDelete={handleDelete}
+              onEdit={setEditingTask}
+              onToggle={onToggle}
+            />
+            {(taskData.previous || taskData.next) && (
+              <div className="mt-6">
+                <Pagination
+                  previous={taskData.previous}
+                  next={taskData.next}
+                  onPageChange={(url) => url && setPageUrl(url)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
